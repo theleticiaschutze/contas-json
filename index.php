@@ -1,5 +1,5 @@
-<!-- a parte do json fica dentro do index agora e retorna php não ajax/js AINDA ESTOU ADAPTANDO!!!!!!!!!!!!!!!!11! -->
-    <?php    
+<!-- a parte do json fica dentro do index agora e retorna php não ajax/js AINDA ESTOU ADAPTANDO!!!!!!!!!!!!!!!!! -->
+<?php    
 $dados = 'contas.json'; //arquivo json onde os dados ficam
 $contas = json_decode(file_get_contents($dados), true) ?? []; //decodifica para formato que array q o php usa
 
@@ -7,7 +7,7 @@ $acao = $_POST['acao'] ?? $_GET['acao'] ?? ''; //pode usar get ou post para acao
 
 if ($acao == 'inserir') {  //se acao for inserir
     $adicionarId = empty($contas) ? 1 : max(array_keys($contas)) + 1; //se for vazio começa de 1, se tiver id adiciona mais 1
-     $contas[$adicionarId] = [ //id é chave do objeto    
+    $contas[$adicionarId] = [ //id é chave do objeto    
         "codigo"     => $_POST['codigo'],
         "favorecido"     => $_POST['favorecido'],
         "vencimento" => $_POST['vencimento'],
@@ -43,49 +43,49 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
         $contaModificar['_id'] = $id;
     }
 }  
-    ?>
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <title>Contas a pagar</title>
 </head>
 <body>
 
-<div class="container mt-4" style="max-width: 1200px">
-<h1 class="my-4 text-center"> Registro de contas a pagar</h1>
-<!-- Mostra o alerta de sucesso da operacao abaixo do titulo, pode ser clicado para fechar, usei echo para comprar com sempre envolver o php em < ? -->
-<?php $status = $_GET['status'] ?? ''; 
-if ($status === 'sucesso') { 
-echo '<div class="alert alert-success alert-dismissible fade show">';
-echo    'Conta foi registrada!!';
-echo    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
-echo'</div>';
-} elseif ($status === 'atualizado') { 
-echo'<div class="alert alert-info alert-dismissible fade show">';
-echo    'Conta foi atualizada!!!';
-echo    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
-echo'</div>';
-} elseif ($status === 'removido') { 
-echo'<div class="alert alert-warning alert-dismissible fade show">';
-echo    'Conta foi removida.';
-echo    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
-echo'</div>';
-}
- ?>
+    <div class="container mt-5" style="max-width: 1100px">
+        <h1 class="my-4 text-center"> Registro de contas a pagar</h1>
 
+        <!-- Mostra o alerta de sucesso da operacao abaixo do titulo, pode ser clicado para fechar, usei echo para comprar com sempre envolver o php em < ? -->
+        <?php 
+        $status = $_GET['status'] ?? ''; 
+        if ($status === 'sucesso') { 
+            echo '<div class="alert alert-success alert-dismissible fade show">';
+            echo    'Conta foi registrada!!';
+            echo    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+            echo'</div>';
+        } elseif ($status === 'atualizado') { 
+            echo'<div class="alert alert-info alert-dismissible fade show">';
+            echo    'Conta foi atualizada!!!';
+            echo    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+            echo'</div>';
+        } elseif ($status === 'removido') { 
+            echo'<div class="alert alert-warning alert-dismissible fade show">';
+            echo    'Conta foi removida.';
+            echo    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
+            echo'</div>';
+        }
+    ?>
     <div class="row">
-    <div class="col-lg-4 mb-4">
-<!-- Formulário 4 de 12 grids -->
-<form method="post" action="index.php">
-    <input type="hidden" name="acao" value="<?= $contaModificar ? 'atualizar' : 'inserir' ?>">
-    <input type="hidden" name="id" value="<?= $contaModificar['_id'] ?? '' ?>">           
-        <!--form para inserir e atualizar a tabela-->
-        
-        <div class="card shadow-sm p-3">             
-                    
+        <div class="col-lg-4 mb-4">
+        <!-- Formulário 4 de 12 grids -->
+            <form method="post" action="index.php">
+                <input type="hidden" name="acao" value="<?= $contaModificar ? 'atualizar' : 'inserir' ?>">
+                <input type="hidden" name="id" value="<?= $contaModificar['_id'] ?? '' ?>">           
+                <div class="card shadow-sm p-3">             
                     <div class="mb-3">
                         <label for="codigo">Código:</label>
                         <input type="text" name="codigo" id="codigo" class="form-control" required autofocus
@@ -109,58 +109,51 @@ echo'</div>';
                     <div class="d-grid gap-2 mt-4">
                         <button type="submit" class="btn btn-success">Salvar Conta</button>                                              
                     </div>                    
-        </div>      
-                </form>
+                </div>      
+            </form>
         </div>
 
-
- <!-- tabela 8 de 12 grids -->
-    <div class="col-lg-8">
-                <div class="table-responsive">
-                    <table class="table table-hover" id="tabela-toda"> 
-                        <thead class="table-light">
-                <tr>
-                    <th scope="col">Código</th>
-                    <th scope="col">Favorecido</th>
-                    <th scope="col">Vencimento</th>
-                    <th scope="col">Valor</th>
-                    <th scope="col">Ações</th>                    
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($contas as $id => $conta){ // vai preencher as linhas com info usando loop ?>
-        <tr>
-            <td><?= $conta['codigo'] ?></td>
-            <td><?= $conta['favorecido'] ?></td>
-            <td><?= $conta['vencimento'] ?></td>
-            <td>R$ <?= number_format($conta['valor'], 2, ',', '.') //formatação do valor para exibição no modo usado no brasil ?></td>
-            <td>
-                <a href="?acao=modificar&id=<?= $id ?>">Modificar</a>
-                <a href="?acao=remover&id=<?= $id ?>" onclick="return confirm('Deseja remover?')">Remover</a> <!-- o return confirm é JS-->
-            </td>
-        </tr>
-    <?php } ?>                       
-            </tbody>
-            <?php
-            $total = array_sum(array_column($contas, 'valor')); //usamos os valores da coluna valor com sum para achar o total
-            ?>
-            <tfoot>
-                <tr>
-                 <td colspan="3">Total devido:</td>
-                <td>R$ <?= number_format($total, 2, ',', '.') ?></td>
-                </tr>
-            </tfoot>
-        </table>
-     </div>  
-     </div>
+        <!-- tabela 8 de 12 grids -->
+        <div class="col-lg-8">
+            <div class="table-responsive">
+                <table class="table table-hover" id="tabela-toda"> 
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Código</th>
+                            <th scope="col">Favorecido</th>
+                            <th scope="col">Vencimento</th>
+                            <th scope="col">Valor</th>
+                            <th scope="col">Ações</th>                    
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($contas as $id => $conta){ // vai preencher as linhas com info usando loop ?>
+                        <tr>
+                            <td><?= $conta['codigo'] ?></td>
+                            <td><?= $conta['favorecido'] ?></td>
+                            <td><?= $conta['vencimento'] ?></td>
+                            <td>R$ <?= number_format($conta['valor'], 2, ',', '.') //formatação do valor para exibição no modo usado no brasil ?></td>
+                            <td>
+                                <a href="?acao=modificar&id=<?= $id ?>">Modificar</a>
+                                <a href="?acao=remover&id=<?= $id ?>" onclick="return confirm('Deseja remover?')">Remover</a> <!-- o return confirm é JS-->
+                            </td>
+                        </tr>
+                        <?php } ?>                       
+                    </tbody>
+                    <?php
+                    $total = array_sum(array_column($contas, 'valor')); //usamos os valores da coluna valor com sum para achar o total
+                    ?>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">Total devido:</td>
+                            <td>R$ <?= number_format($total, 2, ',', '.') ?></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>  
+        </div>
     </div>
-</div>
 
-
-
-
-
- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>   
 </body>
 </html>
-
