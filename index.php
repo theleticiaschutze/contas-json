@@ -1,4 +1,4 @@
-<!-- a parte do json fica dentro do index agora e retorna php não ajax/js AINDA ESTOU ADAPTANDO!!!!!!!!!!!!!!!!! -->
+<!-- a parte do json fica dentro do index agora e retorna php não ajax/js -->
 <?php    
 $dados = 'contas.json'; //arquivo json onde os dados ficam
 $contas = json_decode(file_get_contents($dados), true) ?? []; //decodifica para formato que array q o php usa
@@ -6,6 +6,15 @@ $contas = json_decode(file_get_contents($dados), true) ?? []; //decodifica para 
 $acao = $_POST['acao'] ?? $_GET['acao'] ?? ''; //pode usar get ou post para acao, ou vazio
 
 if ($acao == 'inserir') {  //se acao for inserir
+    //validar se não tem outro codigo igual
+    $codigoNovo = $_POST['codigo'];
+    $codigosExistentes = array_column($contas, 'codigo');
+    if (in_array($codigoNovo, $codigosExistentes)) {
+        header("Location: index.php?status=erro_duplicado");
+        exit;
+    }
+
+
     $adicionarId = empty($contas) ? 1 : max(array_keys($contas)) + 1; //se for vazio começa de 1, se tiver id adiciona mais 1
     $contas[$adicionarId] = [ //id é chave do objeto    
         "codigo"     => $_POST['codigo'],
@@ -18,6 +27,14 @@ if ($acao == 'inserir') {  //se acao for inserir
     exit;
 
 } else if ($acao == 'atualizar') { //se acao for atualizar
+    //validar se não tem outro codigo igual também
+    $codigoNovo = $_POST['codigo'];
+    $codigosExistentes = array_column($contas, 'codigo');
+    if (in_array($codigoNovo, $codigosExistentes)) {
+        header("Location: index.php?status=erro_duplicado");
+        exit;
+    }
+
     $id = $_POST['id'];  //esse retorna e continua o mesmo
     $contas[$id]['codigo']     = $_POST['codigo'];
     $contas[$id]['favorecido']     = $_POST['favorecido'];
