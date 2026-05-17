@@ -77,8 +77,14 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
             echo    'Conta foi removida.';
             echo    '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>';
             echo'</div>';
+        } else {
+            // alerta nvisivel para tela não ficar mexendo, com a classe 'invisible'
+            echo '<div class="alert alert-dismissible invisible">';
+            echo    '&nbsp;'; 
+            echo    '<button type="button" class="btn-close"></button>';
+            echo '</div>';
         }
-    ?>
+        ?>
     <div class="row">
         <div class="col-lg-4 mb-4">
         <!-- Formulário 4 de 12 grids -->
@@ -134,8 +140,12 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
                             <td><?= $conta['vencimento'] ?></td>
                             <td>R$ <?= number_format($conta['valor'], 2, ',', '.') //formatação do valor para exibição no modo usado no brasil ?></td>
                             <td>
-                                <a href="?acao=modificar&id=<?= $id ?>">Modificar</a>
-                                <a href="?acao=remover&id=<?= $id ?>" onclick="return confirm('Deseja remover?')">Remover</a> <!-- o return confirm é JS-->
+                                <a href="?acao=modificar&id=<?= $id ?>" class="btn btn-sm btn-outline-warning" title="Modificar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <a href="?acao=remover&id=<?= $id ?>" class="btn btn-sm btn-outline-danger" title="Remover" onclick="return confirm('Deseja remover?')"> <!-- o return confirm é JS-->
+                                    <i class="bi bi-trash"></i>
+                                </a>
                             </td>
                         </tr>
                         <?php } ?>                       
