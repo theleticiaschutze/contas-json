@@ -151,8 +151,9 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
                                 <a href="?acao=modificar&id=<?= $id ?>" class="btn btn-sm btn-outline-warning" title="Modificar">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
-                                <a href="?acao=remover&id=<?= $id ?>" class="btn btn-sm btn-outline-danger" title="Remover" onclick="return confirm('Deseja remover?')"> <!-- o return confirm é JS-->
-                                    <i class="bi bi-trash"></i>
+                                <a href="#" class="btn btn-sm btn-outline-danger" title="Remover"
+                                onclick="confirmarRemover('?acao=remover&id=<?= $id ?>')">
+                                <i class="bi bi-trash"></i>
                                 </a>
                             </td>
                         </tr>
@@ -171,6 +172,26 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
             </div>  
         </div>
     </div>
+
+    <!-- usaremos um modal do bootstrap para o remover ficar mais bonito, 
+     lembra que usamos modal naquele primeiro trabalho!! -->
+    <div class="modal fade" id="modalRemover" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Confirme a remoção</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+            Tem certeza que deseja remover a conta?
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Não</button>
+            <a id="btnConfirmarRemover" href="#" class="btn btn-danger">Sim</a>
+        </div>
+    </div>
+</div>
+</div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>   
     <script>
@@ -196,6 +217,12 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
         document.getElementById('codigo').addEventListener('input', function(){
             this.classList.remove('is-invalid');
         })
+          
+        //remover codigo js para o modal, oa invés do alert, acho que é bem opcional, mas fica mais obnito
+        function confirmarRemover(url) {
+        document.getElementById('btnConfirmarRemover').href = url;
+        new bootstrap.Modal(document.getElementById('modalRemover')).show();
+        }
 
         </script>
     
