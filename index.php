@@ -121,8 +121,11 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
                             value="<?= $contaModificar['valor'] ?? '' ?>">
                     </div>
                     <div class="d-grid gap-2 mt-4">
-                        <button type="submit" class="btn btn-success">Salvar Conta</button>                                              
-                    </div>                    
+                        <button type="submit" class="btn btn-success">Salvar Conta</button>
+                    <?php if ($contaModificar) { ?>
+                     <a href="index.php" class="btn btn-secondary">Cancelar</a>
+                    <?php } ?>
+            </div>                   
                 </div>      
             </form>
         </div>
@@ -141,11 +144,30 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($contas as $id => $conta){ // vai preencher as linhas com info usando loop ?>
+                        <?php 
+                         uasort($contas, function($a, $b) { // organiza os documentos na tabela pela data de vencimento...
+                         return strtotime($a['vencimento']) - strtotime($b['vencimento']);
+                        });
+                        foreach ($contas as $id => $conta){ // vai preencher as linhas com info usando loop ?>
                         <tr>
                             <td><?= $conta['codigo'] ?></td>
                             <td><?= $conta['favorecido'] ?></td>
-                            <td><?= date('d/m/Y', strtotime($conta['vencimento'])) ?></td>
+                            <!--<td><?= date('d/m/Y', strtotime($conta['vencimento'])) ?></td> -->
+                            <td><?php
+                                $vencimento = strtotime($conta['vencimento']);
+                                $hoje = strtotime(date('Y-m-d'));
+                                if ($vencimento < $hoje) {
+                                     $classe = 'text-danger fw-bold';
+                                } elseif ($vencimento == $hoje) {
+                                    $classe = 'fw-bold';
+                                 } else {
+                                     $classe = '';
+                                 }
+                            ?>
+                             <span class="<?= $classe ?>">
+                             <?= date('d/m/Y', $vencimento) ?>
+                            </span>
+                            </td>
                             <td>R$ <?= number_format($conta['valor'], 2, ',', '.') //formatação do valor para exibição no modo usado no brasil ?></td>
                             <td>
                                 <a href="?acao=modificar&id=<?= $id ?>" class="btn btn-sm btn-outline-warning" title="Modificar">
