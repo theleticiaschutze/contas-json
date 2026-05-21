@@ -77,12 +77,7 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
             echo'<div class="alert alert-warning alert-dismissible fade show">';
             echo    'Conta foi removida.';
             echo    '<button type="button" class="btn-close" onclick="this.parentElement.classList.add(\'invisible\')"></button>';
-            echo'</div>';
-        //} elseif ($status === 'erro_duplicado') { //esse se colocou duplicado
-        //    echo '<div class="alert alert-warning alert-dismissible fade show">';
-        //    echo    'Erro: Este código já existe, insira um código diferente.';
-        //    echo    '<button type="button" class="btn-close" onclick="this.parentElement.classList.add(\'invisible\')"></button>';
-        //    echo '</div>';
+            echo'</div>';        
         } else {  // alerta nvisivel para tela não ficar mexendo, com a classe 'invisible'
             echo '<div class="alert alert-dismissible invisible">';
             echo    '&nbsp;'; 
@@ -221,6 +216,7 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
         document.querySelector('form').addEventListener('submit', function(e) {
             const acao = document.querySelector('input[name="acao"]').value;
 
+            //cria um vetor com todos os codigos da tabela
             const codigoDigitado = document.getElementById('codigo').value;
             const codigosNaTabela = [...document.querySelectorAll('tbody td:first-child')]
                 .map(td => td.textContent.trim());
@@ -231,12 +227,6 @@ if ($acao == 'modificar' && isset($_GET['id'])) {
             // se o codigo não mudar salva
             if (codigoDigitado === codigoOriginal) return;
     
-            // se mudou, checa se o novo já existe
-            if (codigosNaTabela.includes(codigoDigitado)) {
-                e.preventDefault();
-                 document.getElementById('codigo').classList.add('is-invalid');
-                }
-            return;
             }            
 
             if (codigosNaTabela.includes(codigoDigitado)) {
